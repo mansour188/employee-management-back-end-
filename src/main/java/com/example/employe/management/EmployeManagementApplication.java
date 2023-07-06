@@ -8,6 +8,8 @@ public class EmployeManagementApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EmployeManagementApplication.class, args);
+		System.out.println("hello world");
+
 	}
 
 }
