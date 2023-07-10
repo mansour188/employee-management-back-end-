@@ -55,7 +55,7 @@ public class LeaveRequestService {
     }
 
     public List<LeaveRequest> getLeaveRequestByuserId(Integer userId){
-      return leaveRequestRepository.findByUserId(userId);
+      return leaveRequestRepository.findByUserUserId(userId);
     }
 
     public  void acceptLeaveRequest(Integer leaveRequestId ){
