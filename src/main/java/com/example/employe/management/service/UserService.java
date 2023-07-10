@@ -7,12 +7,15 @@ import com.example.employe.management.model.Users;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Service
 public class UserService {
+    @Autowired
+
     private EmployerRepository employerRepository;
     public Users addEmployer(EmployerDto employer){
        Users newEmployer =new Users();

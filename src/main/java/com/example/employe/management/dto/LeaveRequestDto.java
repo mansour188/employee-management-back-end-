@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class leaveRequestDto {
+public class LeaveRequestDto {
     private String debutDate;
     private String finDate;
 

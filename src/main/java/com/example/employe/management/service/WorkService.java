@@ -7,6 +7,7 @@ import com.example.employe.management.model.Work;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +19,12 @@ import java.util.Optional;
 @NoArgsConstructor
 @Service
 public class WorkService {
-   private EmployerRepository employerRepositor;
-   private WorkRepository workRepository;
+    @Autowired
+
+    private EmployerRepository employerRepositor;
+    @Autowired
+
+    private WorkRepository workRepository;
     public void saveWorkByUserId(Integer userId, Work work) {
         Users user = employerRepositor.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));

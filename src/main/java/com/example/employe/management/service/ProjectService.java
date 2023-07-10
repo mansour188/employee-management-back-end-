@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,8 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Service
 public class ProjectService {
+
+    @Autowired
 
     private ProjectRepositorty projectRepositorty;
     public void createProject(Project project) throws Exception {

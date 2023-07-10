@@ -2,12 +2,13 @@ package com.example.employe.management.service;
 
 import com.example.employe.management.Repo.EmployerRepository;
 import com.example.employe.management.Repo.LeaveRequestRepository;
-import com.example.employe.management.dto.leaveRequestDto;
+import com.example.employe.management.dto.LeaveRequestDto;
 import com.example.employe.management.model.LeaveRequest;
 import com.example.employe.management.model.Users;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +22,15 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Service
 public class LeaveRequestService {
+    @Autowired
+
     private LeaveRequestRepository leaveRequestRepository;
+    @Autowired
+
     private EmployerRepository employerRepository;
 
 
-    public void sendLeaveRequest(Integer userId , leaveRequestDto leaveRequestDto){
+    public void sendLeaveRequest(Integer userId , LeaveRequestDto leaveRequestDto){
         Optional<Users> employee=employerRepository.findById(userId);
         if (employee.isPresent()){
             LeaveRequest leaveRequest=new LeaveRequest();

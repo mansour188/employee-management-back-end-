@@ -6,6 +6,7 @@ import com.example.employe.management.model.Users;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Service
 public class DepartmentService {
+
+    @Autowired
     private DepartementRepository departementRepository;
     public List<Department> getAllDepartements(){
         Iterable<Department> departements = departementRepository.findAll();
