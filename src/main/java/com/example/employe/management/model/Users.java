@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -13,7 +15,8 @@ import lombok.NoArgsConstructor;
 
 public class Users {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
     private String firstname;
     private String lastName;
@@ -30,6 +33,9 @@ public class Users {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "LeaveRequest_id", referencedColumnName = "Id")
     private LeaveRequest LeaveRequest;
+    @OneToMany(mappedBy = "employer")
+    private List<Work> works;
+
 
 
 }

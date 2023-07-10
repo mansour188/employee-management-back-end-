@@ -5,19 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-public class Project {
+
+public class Work {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer projectID;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Integer workId;
     private String title;
+    private LocalDateTime startTime;
+    private Duration duration;
     private String description;
-    @OneToMany(mappedBy = "project")
-    List<Users> employees;
+    @ManyToOne
+    private Users employer;
+
 
 }

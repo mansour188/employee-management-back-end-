@@ -4,5 +4,10 @@ import com.example.employe.management.model.LeaveRequest;
 import com.example.employe.management.model.Users;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface LeaveRequestRepository extends CrudRepository<LeaveRequest, Integer> {
+    List<LeaveRequest> findByAcceptedTrue();
+    List<LeaveRequest> findByAcceptedFalse();
+    List<LeaveRequest> findByUserId(Integer userId);
 }
