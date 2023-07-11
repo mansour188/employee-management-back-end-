@@ -1,7 +1,9 @@
 package com.example.employe.management.service;
 
 import com.example.employe.management.Repo.DepartementRepository;
+import com.example.employe.management.Repo.EmployerRepository;
 import com.example.employe.management.model.Department;
+import com.example.employe.management.model.Project;
 import com.example.employe.management.model.Users;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,8 @@ public class DepartmentService {
 
     @Autowired
     private DepartementRepository departementRepository;
+    @Autowired
+    private EmployerRepository employerRepository;
     public List<Department> getAllDepartements(){
         Iterable<Department> departements = departementRepository.findAll();
         return StreamSupport.stream(departements.spliterator(), false)  //convert Iterable to list
@@ -60,13 +64,19 @@ public class DepartmentService {
     }
 
 
-    public void addEmployeToDepartement(Integer depId, List<Users> employes) {
+    public void addEmployeToDepartement(Integer depId, List<Integer> employeeIds) {
         Optional<Department> department = departementRepository.findById(depId);
         if (department.isPresent()) {
-            Department updatedDepartment = department.get();
-            List<Users> oldEmployer = updatedDepartment.getEmployees();
-            oldEmployer.addAll(employes);
-            updatedDepartment.setEmployees(oldEmployer);
+            Department UpdaatedDepartement = department.get();
+
+            Iterable<Users> empl = employerRepository.findAllById(employeeIds);
+            List<Users> employees= StreamSupport.stream(empl.spliterator(), false)  //convert Iterable to list
+                    .collect(Collectors.toList());
+            UpdaatedDepartement.getEmployees().addAll(employees);
+
+
+
+            departementRepository.save(UpdaatedDepartement);
 
 
         } else {

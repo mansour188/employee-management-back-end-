@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -82,6 +83,12 @@ public class LeaveRequestService {
 
    }
 
+    public List<LeaveRequest> getLeaveRequestsByUserIdInCurrentYear(Integer userId) {
+        LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
+        LocalDate endOfYear = LocalDate.now().withDayOfYear(365);
+
+        return leaveRequestRepository.findAllByUserUserIdAndDebutDateBetween(userId, startOfYear, endOfYear);
+    }
 
 
 

@@ -1,5 +1,6 @@
 package com.example.employe.management.service;
 
+import com.example.employe.management.Repo.EmployerRepository;
 import com.example.employe.management.Repo.ProjectRepositorty;
 import com.example.employe.management.model.Project;
 import com.example.employe.management.model.Users;
@@ -25,6 +26,8 @@ public class ProjectService {
     @Autowired
 
     private ProjectRepositorty projectRepositorty;
+    @Autowired
+    private EmployerRepository employerRepository;
     public void createProject(Project project) throws Exception {
         Optional<Project> p=projectRepositorty.findByTitle(project.getTitle());
         if (p.isPresent()){
@@ -41,7 +44,10 @@ public class ProjectService {
 
     public void updateProject(Integer projectId,Project project){
         Optional<Project> p=projectRepositorty.findById(projectId);
-        if (p.isPresent()){
+        System.out.println("*********************************************************");
+        System.out.println(p.get());
+
+        if (!p.isPresent()){
             log.info("project with id= " + projectId + " not found");
             throw new IllegalArgumentException("project with id= " + projectId + " not found");
         }else {
@@ -62,13 +68,19 @@ public class ProjectService {
 
     }
 
-    public void AddEmployerToProject(Integer projectId, Users employee){
+    public void AddEmployerToProject(Integer projectId, List<Integer> employeeIds){
         Optional<Project> p=projectRepositorty.findById(projectId);
         if (p.isPresent()){
-           Project project=p.get();
+            Project project = p.get();
 
-           project.getEmployees().add(employee);
-           projectRepositorty.save(project);
+            Iterable<Users> empl = employerRepository.findAllById(employeeIds);
+            List<Users> employees= StreamSupport.stream(empl.spliterator(), false)  //convert Iterable to list
+                    .collect(Collectors.toList());
+            project.getEmployees().addAll(employees);
+
+          
+
+            projectRepositorty.save(project);
         }else {
             log.info("project with id= " + projectId + " not found");
             throw new IllegalArgumentException("project with id= " + projectId + " not found");

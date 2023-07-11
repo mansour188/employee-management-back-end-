@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -14,8 +16,8 @@ public class LeaveRequest {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer Id;
-    private String debutDate;
-    private String finDate;
+    private LocalDate debutDate;
+    private LocalDate  finDate;
     private boolean accepted;
 
     @OneToOne(mappedBy = "LeaveRequest")

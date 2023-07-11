@@ -35,10 +35,14 @@ public class LeaveRequestController {
         return leaveRequestService.getNonAcceptedLeaveRequest();
     }
     @GetMapping("/{userId}")
-    public List<LeaveRequest> getLeaveRequestByuserId(@RequestParam("userId") Integer userId){
+    public List<LeaveRequest> getLeaveRequestByuserId(@PathVariable("userId") Integer userId){
         return leaveRequestService.getLeaveRequestByuserId(userId);
     }
 
+    @GetMapping("/CurrentYear/{userId}")
+    public List<LeaveRequest> getLeaveRequestsByUserIdInCurrentYear(@PathVariable("userId") Integer userId){
+        return leaveRequestService.getLeaveRequestsByUserIdInCurrentYear(userId);
+    }
 
 
 }

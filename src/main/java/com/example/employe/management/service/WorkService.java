@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -60,5 +63,11 @@ public class WorkService {
 
     public List<Work> getAllWorkByUserId(Integer userId){
        return  workRepository.findByEmployerUserId(userId);
+    }
+    public List<Work> getWorksFromYesterdayByUserId(Integer userId) {
+        LocalDateTime startDateTime = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime endDateTime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MAX);
+
+        return workRepository.findByEmployerUserIdAndStartTimeBetween(userId, startDateTime, endDateTime);
     }
 }

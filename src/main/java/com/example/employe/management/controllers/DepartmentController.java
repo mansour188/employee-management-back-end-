@@ -40,12 +40,12 @@ public class DepartmentController {
         return ResponseEntity.ok("delated");
     }
     @PostMapping("/addEmployee/{id}")
-    public void addEmployeToDepartement(@RequestParam("id") Integer id , List<Users> employees){
-        departmentService.addEmployeToDepartement(id,employees);
+    public void addEmployeToDepartement(@PathVariable("id") Integer id , List<Integer> employeeIds){
+        departmentService.addEmployeToDepartement(id,employeeIds);
     }
 
     @PutMapping("/{id}")
-    public void UpdateDepertement(@RequestParam("id") Integer id, @RequestBody Department department){
+    public void UpdateDepertement(@PathVariable("id") Integer id, @RequestBody Department department){
         departmentService.UpdateDepertement(id,department);
     }
 
