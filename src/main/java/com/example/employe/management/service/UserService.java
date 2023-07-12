@@ -2,6 +2,7 @@ package com.example.employe.management.service;
 
 import com.example.employe.management.Repo.EmployerRepository;
 import com.example.employe.management.dto.EmployerDto;
+import com.example.employe.management.exception.UserFoundException;
 import com.example.employe.management.model.Role;
 import com.example.employe.management.model.Users;
 import lombok.AllArgsConstructor;
@@ -13,21 +14,28 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
 @Service
 public class UserService implements UserDetailsService {
+
+
+    @Autowired
+
+    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
 
     private EmployerRepository employerRepository;
     public Users addEmployer(EmployerDto employer){
+        Users userExist= employerRepository.findByEmail(employer.getEmail());
+        if (userExist!=null){
+            throw new UserFoundException("email déjà exist");
+        }
        Users newEmployer =new Users();
        newEmployer.setRole(Role.EMPLOYER);
        newEmployer.setEmail(employer.getEmail());
@@ -37,7 +45,7 @@ public class UserService implements UserDetailsService {
        newEmployer.setImageUrl(employer.getImageUrl());
        newEmployer.setBirthDay(employer.getBirthDay());
 
-       newEmployer.setPassword(employer.getPassword());
+       newEmployer.setPassword(passwordEncoder.encode(employer.getPassword()));
      return   employerRepository.save(newEmployer);
     }
 

@@ -16,5 +16,4 @@ public class RegestrationRequest {
     private String password;
     private String birthDay;
     private String ImageUrl;
-    private Role role;
 }

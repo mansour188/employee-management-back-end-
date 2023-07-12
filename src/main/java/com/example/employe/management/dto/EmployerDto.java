@@ -1,14 +1,26 @@
 package com.example.employe.management.dto;
 
 
+import javax.validation.constraints.NotBlank;
 
 public class EmployerDto {
-    private Integer userId;
+    @NotBlank
+
     private String firstname;
+    @NotBlank
+
     private String lastName;
+    @NotBlank
+
     private String email;
+    @NotBlank
+
     private String password;
+    @NotBlank
+
     private String birthDay;
+    @NotBlank
+
     private String ImageUrl;
 
 
@@ -17,13 +29,7 @@ public class EmployerDto {
     public EmployerDto() {
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     public String getFirstname() {
         return firstname;
