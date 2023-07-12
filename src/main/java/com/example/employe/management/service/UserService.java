@@ -6,14 +6,24 @@ import com.example.employe.management.model.Role;
 import com.example.employe.management.model.Users;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
 
     private EmployerRepository employerRepository;
@@ -32,5 +42,16 @@ public class UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Users user= employerRepository.findByEmail(username);
+        if (user==null){
+            throw new UsernameNotFoundException("user with email "+username+" not exist");
+        }else {
+            log.info("user exist in database");
+        }
 
+
+        return new User(user.getEmail(),user.getPassword(),user.getAuthorities());
+    }
 }

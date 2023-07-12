@@ -4,4 +4,5 @@ import com.example.employe.management.model.Users;
 import org.springframework.data.repository.CrudRepository;
 
 public interface EmployerRepository extends CrudRepository<Users, Integer> {
+    Users findByEmail(String email);
 }
