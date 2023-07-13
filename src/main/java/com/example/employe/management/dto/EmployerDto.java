@@ -1,25 +1,30 @@
 package com.example.employe.management.dto;
 
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class EmployerDto {
-    @NotBlank
+   @NotNull
 
     private String firstname;
     @NotBlank
 
     private String lastName;
-    @NotBlank
+   @Email
+   @NotBlank
 
     private String email;
+    @Size(min =3)
     @NotBlank
 
     private String password;
-    @NotBlank
+    @NotNull
 
     private String birthDay;
-    @NotBlank
+
 
     private String ImageUrl;
 

@@ -21,7 +21,7 @@ public class LeaveRequestController {
 
     }
 
-    @GetMapping("/")
+    @GetMapping("/All")
     public List<LeaveRequest> getAllLeaveRequest(){
         return leaveRequestService.getAllLeaveRequest();
     }
@@ -43,6 +43,11 @@ public class LeaveRequestController {
     public List<LeaveRequest> getLeaveRequestsByUserIdInCurrentYear(@PathVariable("userId") Integer userId){
         return leaveRequestService.getLeaveRequestsByUserIdInCurrentYear(userId);
     }
+    @GetMapping("/thisYear")
+    public List<LeaveRequest> getLeaveRequestsInCurrentYear(){
+        return leaveRequestService.getLeaveRequestsInCurrentYear();
+    }
+
 
 
 }

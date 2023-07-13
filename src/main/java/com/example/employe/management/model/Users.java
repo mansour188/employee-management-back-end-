@@ -1,12 +1,15 @@
 package com.example.employe.management.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,8 +26,13 @@ public class Users  {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+    @NotNull
     private String firstname;
+    @NotNull
     private String lastName;
+    @NotNull
+    @Email
+
     private String email;
     private String password;
     private String birthDay;

@@ -1,9 +1,11 @@
 package com.example.employe.management.config;
 
-import com.example.employe.management.service.UserService;
+import com.example.employe.management.model.Role;
+import com.example.employe.management.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,13 +22,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 
+
 @Configuration
 @EnableWebSecurity
 
 
 public class SecurityConfig  {
     @Autowired
-    private UserService userService;
+    private EmployeeService employeeService;
 
     private final JwtTokenFilter jwtTokenFilter;
     private final JwtTokenUtil jwtTokenUtil;
@@ -46,7 +49,7 @@ public class SecurityConfig  {
         DaoAuthenticationProvider provider=
                 new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(userService);
+        provider.setUserDetailsService(employeeService);
         return provider;
 
     }
@@ -61,8 +64,21 @@ public class SecurityConfig  {
         http.csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/**","/auth/**").permitAll()
+                        .requestMatchers("/api/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/departement/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/project/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/departement/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,"/project/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/departement/**").hasAnyAuthority(Role.EMPLOYER.name(),Role.MANAGER.name())
+                        .requestMatchers(HttpMethod.GET,"/project/**").hasAnyAuthority(Role.EMPLOYER.name(),Role.MANAGER.name(),Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/leaveRequest/**").hasAnyAuthority(Role.EMPLOYER.name(),Role.MANAGER.name(),Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/leaveRequest/All","/leaveRequest/accepted","/leaveRequest/rejected").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/leaveRequest/CurrentYear/**").hasAnyAuthority(Role.EMPLOYER.name(),Role.MANAGER.name(),Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/leaveRequest/thisYear").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/project/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/project/**").hasAnyAuthority(Role.EMPLOYER.name(),Role.MANAGER.name(),Role.ADMIN.name())
+                        .requestMatchers("/work/**").hasAnyAuthority(Role.EMPLOYER.name(),Role.MANAGER.name(),Role.ADMIN.name())
 
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -86,8 +102,9 @@ public class SecurityConfig  {
 
 
 
+
 protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(username -> userService.loadUserByUsername(username));
+        auth.userDetailsService(username -> employeeService.loadUserByUsername(username));
     }
 
 
