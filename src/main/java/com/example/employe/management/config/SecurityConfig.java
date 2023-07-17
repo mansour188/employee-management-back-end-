@@ -17,9 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+
 
 
 
@@ -33,6 +31,9 @@ public class SecurityConfig  {
 
     private final JwtTokenFilter jwtTokenFilter;
     private final JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private  CorsFilterConfig corsFilterConfig;
     public  final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public SecurityConfig(JwtTokenFilter jwtTokenFilter, JwtTokenUtil jwtTokenUtil, BCryptPasswordEncoder bCryptPasswordEncoder) {
@@ -63,6 +64,7 @@ public class SecurityConfig  {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
 
+
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers("/auth/**").permitAll()
@@ -85,6 +87,7 @@ public class SecurityConfig  {
                 .authenticationProvider(daoAuthenticationProvider());
 
         // Add the JWT token filter only for authenticated requests
+        http.addFilterBefore(corsFilterConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();}
@@ -108,16 +111,5 @@ protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     }
 
 
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+
 }

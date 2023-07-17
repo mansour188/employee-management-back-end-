@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,7 @@ public class EmployeeService implements UserDetailsService {
     @Autowired
 
     private EmployerRepository employerRepository;
+
     public Users addEmployer(EmployerDto employer){
         Users userExist= employerRepository.findByEmail(employer.getEmail());
         if (userExist!=null){
@@ -68,7 +70,7 @@ public class EmployeeService implements UserDetailsService {
     }
     public List<UserResponse> getAllEmployers(){
         List<Users> users=employerRepository.findByRole(Role.EMPLOYER);
-        List<UserResponse> employers = null;
+        List<UserResponse> employers = new ArrayList<>();
         users.forEach((u)->{
             UserResponse e=new UserResponse();
             e.setDepartment(u.getDepartment());
@@ -86,7 +88,7 @@ public class EmployeeService implements UserDetailsService {
     }
     public List<UserResponse> getAllManger(){
         List<Users> users=employerRepository.findByRole(Role.MANAGER);
-        List<UserResponse> managers = null;
+        List<UserResponse> managers = new ArrayList<>();
         users.forEach((u)->{
             UserResponse e=new UserResponse();
             e.setDepartment(u.getDepartment());
@@ -118,5 +120,11 @@ public class EmployeeService implements UserDetailsService {
 
 
         }
+    }
+
+
+    public void findRoleByToken(String token){
+
+
     }
 }
