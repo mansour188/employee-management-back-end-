@@ -6,6 +6,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MultipartException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,9 @@ public class CustomExceptionHandler {
         String errorMessage = "Invalid JSON format";
         return ResponseEntity.badRequest().body(errorMessage);
     }
+    @ExceptionHandler(MultipartException.class)
+   public ResponseEntity<String> handleMultipartException(MultipartException ex) {
+       String errorMessage = "Invalid multipart request: " + ex.getMessage();
+       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);}
 
-    // Handle other exceptions as needed...
 }

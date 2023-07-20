@@ -3,17 +3,24 @@ package com.example.employe.management.controllers;
 import com.example.employe.management.dto.EmployerDto;
 import com.example.employe.management.dto.UserResponse;
 import com.example.employe.management.service.EmployeeService;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import com.example.employe.management.validator.FileValidator;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 
 @RestController
@@ -21,19 +28,22 @@ import java.util.stream.Collectors;
 public class EmployerController {
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private  FileValidator fileValidator;
 
-    @PostMapping("register_employee")
-    public ResponseEntity<String> registerEmployee(@RequestBody @Valid EmployerDto employer, BindingResult bindingResult) {
+
+    //send image + json object employee
+
+    @PostMapping(value = "register_employee" ,consumes = {MULTIPART_FORM_DATA_VALUE,APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> registerEmployee( @RequestPart("file") MultipartFile file,@RequestPart("employee")  @Valid  EmployerDto employer,BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             List<String> errorFields = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getField)
                     .collect(Collectors.toList());
-
             String errorMessage = "Validation errors in fields: " + String.join(", ", errorFields);
-            return ResponseEntity.badRequest().body(errorMessage);
-        }
 
-        employeeService.addEmployer(employer);
+            return ResponseEntity.badRequest().body(errorMessage);}
+        employeeService.addEmployer(employer,file);
 
         return ResponseEntity.ok("Request processed successfully");
     }

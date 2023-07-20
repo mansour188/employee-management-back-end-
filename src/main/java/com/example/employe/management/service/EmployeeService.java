@@ -9,6 +9,7 @@ import com.example.employe.management.model.Users;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +17,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @AllArgsConstructor
@@ -36,19 +44,41 @@ public class EmployeeService implements UserDetailsService {
 
     private EmployerRepository employerRepository;
 
-    public Users addEmployer(EmployerDto employer){
+    public Users addEmployer(EmployerDto employer, MultipartFile file) throws IOException {
         Users userExist= employerRepository.findByEmail(employer.getEmail());
         if (userExist!=null){
             throw new UserFoundException("email déjà exist");
         }
        Users newEmployer =new Users();
-       newEmployer.setRole(Role.EMPLOYER);
+       String roleString=employer.getRole();
+        System.out.println("#########################");
+        System.out.println(roleString);
+        if (roleString.equals("ADMIN")) {
+            newEmployer.setRole(Role.ADMIN);
+        } else if (roleString.equals("EMPLOYER")) {
+            newEmployer.setRole(Role.EMPLOYER);
+        } else if (roleString.equals("MANAGER")) {
+            newEmployer.setRole(Role.MANAGER);
+        } else {
+
+            throw new IllegalArgumentException("Invalid role value: " + roleString);
+        }
+
        newEmployer.setEmail(employer.getEmail());
        newEmployer.setFirstname(employer.getFirstname());
        newEmployer.setLastName(employer.getLastName());
 
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String targetDirectory = "media";
+        String targetFilePath = targetDirectory + "/" + fileName;
 
-       newEmployer.setImageUrl(employer.getImageUrl());
+        Path absolutePath = Paths.get("src/main/resources/static").toAbsolutePath();
+        File targetFile = new File(absolutePath.toString(), targetFilePath);
+
+        FileUtils.forceMkdirParent(targetFile);
+        file.transferTo(targetFile);
+
+       newEmployer.setImageUrl(fileName);
        newEmployer.setBirthDay(employer.getBirthDay());
 
        newEmployer.setPassword(passwordEncoder.encode(employer.getPassword()));
@@ -57,7 +87,7 @@ public class EmployeeService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(java.lang.String username) throws UsernameNotFoundException {
         Users user= employerRepository.findByEmail(username);
         if (user==null){
             throw new UsernameNotFoundException("user with email "+username+" not exist");
@@ -77,9 +107,18 @@ public class EmployeeService implements UserDetailsService {
             e.setProject(u.getProject());
             e.setBirthDay(u.getBirthDay());
             e.setEmail(u.getEmail());
-            e.setImageUrl(u.getImageUrl());
             e.setFirstname(u.getFirstname());
             e.setLastName(u.getLastName());
+            System.out.println(u.getImageUrl());
+
+            try {
+                byte[] imageData = Files.readAllBytes(Paths.get("src/main/resources/static/media/" + u.getImageUrl()));
+                e.setImageData(imageData);
+            } catch (IOException error) {
+                error.printStackTrace(); // Log the exception to identify any errors during image reading
+
+
+            }
             employers.add(e);
 
 
@@ -95,7 +134,14 @@ public class EmployeeService implements UserDetailsService {
             e.setProject(u.getProject());
             e.setBirthDay(u.getBirthDay());
             e.setEmail(u.getEmail());
-            e.setImageUrl(u.getImageUrl());
+            try {
+                byte[] imageData = Files.readAllBytes(Paths.get("src/main/resources/static/media/" + u.getImageUrl()));
+                e.setImageData(imageData);
+            } catch (IOException error) {
+                error.printStackTrace(); // Log the exception to identify any errors during image reading
+
+
+            }
             e.setFirstname(u.getFirstname());
             e.setLastName(u.getLastName());
 
@@ -123,7 +169,7 @@ public class EmployeeService implements UserDetailsService {
     }
 
 
-    public void findRoleByToken(String token){
+    public void findRoleByToken(java.lang.String token){
 
 
     }

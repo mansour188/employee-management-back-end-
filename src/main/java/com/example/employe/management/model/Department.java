@@ -17,7 +17,7 @@ public class Department {
     private Integer depId;
     private String depName;
     private String Manger;
-    private  String description;
+    private String description;
     @OneToMany(mappedBy = "department")
     private List<Users> employees;
 

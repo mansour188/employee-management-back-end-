@@ -1,7 +1,6 @@
 package com.example.employe.management;
 
 import com.example.employe.management.Repo.EmployerRepository;
-import com.example.employe.management.dto.UserResponse;
 import com.example.employe.management.model.Role;
 import com.example.employe.management.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(java.lang.String... args) throws Exception {
 
         System.out.println("Application started.");
         Users admin=new Users();

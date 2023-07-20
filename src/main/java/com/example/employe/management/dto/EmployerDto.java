@@ -1,10 +1,8 @@
 package com.example.employe.management.dto;
 
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import com.example.employe.management.model.Role;
+import jakarta.validation.constraints.*;
 
 public class EmployerDto {
    @NotNull
@@ -26,13 +24,17 @@ public class EmployerDto {
     private String birthDay;
 
 
-    private String ImageUrl;
 
+
+    @NotBlank
+    @Pattern(regexp = "^(ADMIN|EMPLOYER|MANAGER)$", message = "Invalid role. Allowed values: ADMIN, EMPLOYEE, MANAGER")
+    private String role;
 
 
 
     public EmployerDto() {
     }
+
 
 
 
@@ -76,12 +78,13 @@ public class EmployerDto {
         this.birthDay = birthDay;
     }
 
-    public String getImageUrl() {
-        return ImageUrl;
+
+    public String getRole() {
+        return role;
     }
 
-    public void setImageUrl(String imageUrl) {
-        ImageUrl = imageUrl;
+    public void setRole(String role) {
+        this.role = role;
     }
 
 

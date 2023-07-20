@@ -24,10 +24,10 @@ import java.util.Map;
 public class JwtTokenUtil  {
     @Autowired
     EmployerRepository userRepo;
-    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    public static final java.lang.String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
 
-    public Boolean validateToken(final String token) {
+    public Boolean validateToken(final java.lang.String token) {
         try{
             Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
             return true;
@@ -36,19 +36,19 @@ public class JwtTokenUtil  {
             return false;
         }
     }
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        String username=getUsername(token);
+    public boolean isTokenValid(java.lang.String token, UserDetails userDetails) {
+        java.lang.String username=getUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 
     }
 
-    private boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(java.lang.String token) {
         Date expiration=getClaims(token).getExpiration();
         return expiration.before(new Date());
 
 
     }
-    private Claims getClaims(String token){
+    private Claims getClaims(java.lang.String token){
         Claims claims;
         try {
             claims = Jwts.parser().setSigningKey(SECRET)
@@ -63,14 +63,14 @@ public class JwtTokenUtil  {
 
 
 
-    public String generateToken(String userName) {
+    public java.lang.String generateToken(java.lang.String userName) {
 
 
-        Map<String, Object> claims = new HashMap<>();
+        Map<java.lang.String, Object> claims = new HashMap<>();
         return createToken(claims, userName);
     }
 
-    private String createToken(Map<String, Object> claims, String userName) {
+    private java.lang.String createToken(Map<java.lang.String, Object> claims, java.lang.String userName) {
         Users user=userRepo.findByEmail(userName);
         Role role=user.getRole();
         claims.put("role",role);
@@ -86,7 +86,7 @@ public class JwtTokenUtil  {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-    public String getUsername(String token) {
+    public java.lang.String getUsername(java.lang.String token) {
         return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody().getSubject();
     }
 
