@@ -47,15 +47,13 @@ public class EmployeeService implements UserDetailsService {
     public Users addEmployer(EmployerDto employer, MultipartFile file) throws IOException {
         Users userExist= employerRepository.findByEmail(employer.getEmail());
         if (userExist!=null){
-            throw new UserFoundException("email déjà exist");
+            throw new UserFoundException("account  exist");
         }
        Users newEmployer =new Users();
        String roleString=employer.getRole();
         System.out.println("#########################");
         System.out.println(roleString);
-        if (roleString.equals("ADMIN")) {
-            newEmployer.setRole(Role.ADMIN);
-        } else if (roleString.equals("EMPLOYER")) {
+         if (roleString.equals("EMPLOYER")) {
             newEmployer.setRole(Role.EMPLOYER);
         } else if (roleString.equals("MANAGER")) {
             newEmployer.setRole(Role.MANAGER);
@@ -103,6 +101,7 @@ public class EmployeeService implements UserDetailsService {
         List<UserResponse> employers = new ArrayList<>();
         users.forEach((u)->{
             UserResponse e=new UserResponse();
+            e.setId(u.getUserId());
             e.setDepartment(u.getDepartment());
             e.setProject(u.getProject());
             e.setBirthDay(u.getBirthDay());
@@ -154,23 +153,76 @@ public class EmployeeService implements UserDetailsService {
     public void deleteEmployer(Integer id){
         employerRepository.deleteById(id);
     }
-    public void updateEmployer(Integer id ,UserResponse userResponse){
-        Optional<Users> opt=employerRepository.findById(id);
-        if (opt.isPresent()){
-            Users empl=opt.get();
-            empl.setLastName(userResponse.getLastName());
-            empl.setFirstname(userResponse.getFirstname());
-            empl.setEmail(userResponse.getEmail());
-            empl.setDepartment(userResponse.getDepartment());
-            empl.setProject(userResponse.getProject());
-
-
+    public void updateEmployer(Integer id ,EmployerDto employer,MultipartFile file) throws IOException {
+        Users userExist= employerRepository.findByEmail(employer.getEmail());
+        if (userExist==null){
+            throw new UserFoundException(" not  exist");
         }
+        Users employerUpdate =new Users();
+        String roleString=employer.getRole();
+
+        if (roleString.equals("EMPLOYER")) {
+            employerUpdate.setRole(Role.EMPLOYER);
+        } else if (roleString.equals("MANAGER")) {
+            employerUpdate.setRole(Role.MANAGER);
+        } else {
+
+            throw new IllegalArgumentException("Invalid role value: " + roleString);
+        }
+
+        employerUpdate.setUserId(id);
+
+        employerUpdate.setEmail(employer.getEmail());
+        employerUpdate.setFirstname(employer.getFirstname());
+        employerUpdate.setLastName(employer.getLastName());
+
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String targetDirectory = "media";
+        String targetFilePath = targetDirectory + "/" + fileName;
+
+        Path absolutePath = Paths.get("src/main/resources/static").toAbsolutePath();
+        File targetFile = new File(absolutePath.toString(), targetFilePath);
+
+        FileUtils.forceMkdirParent(targetFile);
+        file.transferTo(targetFile);
+
+        employerUpdate.setImageUrl(fileName);
+        employerUpdate.setBirthDay(employer.getBirthDay());
+
+        employerUpdate.setPassword(passwordEncoder.encode(employer.getPassword()));
+        employerRepository.save(employerUpdate);
     }
 
 
-    public void findRoleByToken(java.lang.String token){
+  public Users getUserByemail(String email){
+        return employerRepository.findByEmail(email);
+  }
+
+    public UserResponse getEmployeeByid(Integer userId) {
+        Optional<Users> emplOpt=employerRepository.findById(userId);
+        if (emplOpt.isPresent()){
+            Users empl=emplOpt.get();
+            UserResponse resp=new UserResponse();
+            resp.setFirstname(empl.getFirstname());
+            resp.setLastName(empl.getLastName());
+            resp.setProject(empl.getProject());
+            resp.setDepartment(empl.getDepartment());
+            resp.setEmail(empl.getEmail());
+            resp.setBirthDay(empl.getBirthDay());
+            resp.setId(empl.getUserId());
+            try {
+                byte[] imageData = Files.readAllBytes(Paths.get("src/main/resources/static/media/" + empl.getImageUrl()));
+                resp.setImageData(imageData);
+            } catch (IOException error) {
+                error.printStackTrace(); // Log the exception to identify any errors during image reading
 
 
+            }
+            return resp;
+
+
+
+        }
+        throw new UserFoundException("user with id= "+userId+" not found");
     }
 }

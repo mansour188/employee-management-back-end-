@@ -70,4 +70,8 @@ public class WorkService {
 
         return workRepository.findByEmployerUserIdAndStartTimeBetween(userId, startDateTime, endDateTime);
     }
+
+    public  List<Work> getLastTenWorkByuserid(Integer id){
+        return workRepository.findTop10ByEmployerUserIdOrderByStartTimeDesc(id);
+    }
 }

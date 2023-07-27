@@ -38,7 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
         final String header =request.getHeader(TOKEN_HEADER);
         System.out.println(header);
-        System.out.println("//////////////////////////////////////////////////////////////");
+
         final SecurityContext securityContext= SecurityContextHolder.getContext();
         System.out.println(securityContext);
 

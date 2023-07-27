@@ -66,7 +66,8 @@ public class SecurityConfig  {
 
 
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/departement/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/project/**").hasAuthority(Role.ADMIN.name())
@@ -80,7 +81,9 @@ public class SecurityConfig  {
                         .requestMatchers(HttpMethod.GET,"/leaveRequest/thisYear").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/project/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/project/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
-                        .requestMatchers("/work/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/work/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
+
+                        .requestMatchers(HttpMethod.GET,"/work/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
 
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

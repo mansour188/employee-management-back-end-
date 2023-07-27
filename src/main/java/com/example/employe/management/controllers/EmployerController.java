@@ -61,9 +61,24 @@ public class EmployerController {
         employeeService.deleteEmployer(id);
     }
     @PutMapping("updateEmployee/{id}")
-    public void update(@PathVariable("id") Integer id,@RequestBody UserResponse userResponse){
-        employeeService.updateEmployer(id,userResponse);
+    public ResponseEntity<String> update(@PathVariable("id") Integer id,@RequestPart("file") MultipartFile file,@RequestPart("employee")  @Valid  EmployerDto employer,BindingResult bindingResult) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            List<String> errorFields = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getField)
+                    .collect(Collectors.toList());
+            String errorMessage = "Validation errors in fields: " + String.join(", ", errorFields);
+
+            return ResponseEntity.badRequest().body(errorMessage);}
+        employeeService.updateEmployer(id,employer,file);
+
+        return ResponseEntity.ok("Request processed successfully");
     }
+
+     @GetMapping("getEmployee/{userId}")
+    public UserResponse getEmployee(@PathVariable("userId") Integer userId){
+        return employeeService.getEmployeeByid(userId);
+     }
 
 
 

@@ -27,7 +27,7 @@ public class EmployerDto {
 
 
     @NotBlank
-    @Pattern(regexp = "^(ADMIN|EMPLOYER|MANAGER)$", message = "Invalid role. Allowed values: ADMIN, EMPLOYEE, MANAGER")
+    @Pattern(regexp = "^(EMPLOYER|MANAGER)$", message = "Invalid role. Allowed values: ADMIN, EMPLOYEE, MANAGER")
     private String role;
 
 

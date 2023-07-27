@@ -13,20 +13,25 @@ public class WorkController {
     @Autowired
    private WorkService workService;
 
-    @PostMapping("/{userId}")
+    @PostMapping("/post/{userId}")
     public void saveWorkByUserId(@PathVariable("userId") Integer userId, @RequestBody Work work){
         workService.saveWorkByUserId(userId,work);
 
     }
-    @GetMapping("/{userId}")
+    @GetMapping("/get/{userId}")
     public List<Work> getAllWorkByUserId(@PathVariable("userId") Integer userId){
+
         return workService.getAllWorkByUserId(userId);
+    }
+    @GetMapping("/last/{userId}")
+    List<Work> getLastTenWorks(@PathVariable("userId") Integer userId){
+        return workService.getLastTenWorkByuserid(userId);
     }
     @GetMapping("/yesterday/{userId}")
     List<Work> getWorksFromYesterdayByUserId(@PathVariable("userId") Integer userId){
         return workService.getWorksFromYesterdayByUserId(userId);
     }
-    @DeleteMapping("/{workId}")
+    @DeleteMapping("/delete/{workId}")
     public void deleteWork(@PathVariable("workId") Integer workId){
         workService.deleteWork(workId);
 
@@ -35,5 +40,6 @@ public class WorkController {
     public  void updateWork(@PathVariable("workId") Integer workId,@RequestBody Work work) throws Exception {
         workService.updateWork(workId,work);
     }
+
 
 }

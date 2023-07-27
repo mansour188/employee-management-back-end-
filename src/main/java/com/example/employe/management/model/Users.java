@@ -1,5 +1,6 @@
 package com.example.employe.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -45,6 +46,7 @@ public class Users  {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "LeaveRequest_id", referencedColumnName = "Id")
     private LeaveRequest LeaveRequest;
+    @JsonIgnore
     @OneToMany(mappedBy = "employer")
     private List<Work> works;
 
