@@ -1,6 +1,5 @@
-package com.example.employe.management.model;
+package com.example.employe.management.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,21 +7,15 @@ import lombok.NoArgsConstructor;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Entity
-
-public class Work {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+public class Workdto {
+    private Integer userId;
     private Integer workId;
     private String title;
     private LocalDateTime startTime;
     private Integer duration;
     private String description;
-    @ManyToOne
-    private Users employer;
-
 
 }

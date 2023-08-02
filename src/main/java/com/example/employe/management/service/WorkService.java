@@ -2,6 +2,7 @@ package com.example.employe.management.service;
 
 import com.example.employe.management.Repo.EmployerRepository;
 import com.example.employe.management.Repo.WorkRepository;
+import com.example.employe.management.dto.Workdto;
 import com.example.employe.management.model.Users;
 import com.example.employe.management.model.Work;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -33,18 +35,35 @@ public class WorkService {
                 .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));
 
         work.setEmployer(user);
+
         workRepository.save(work);
     }
-    public Work getWorkById(Integer workId){
-        Optional<Work> work=workRepository.findById(workId);
-        return work.orElseThrow(() -> new NoSuchElementException("Work with id = "+workId +"not found"));
+    public Workdto getWorkById(Integer workId){
+        Optional<Work> w=workRepository.findById(workId);
+        if (!w.isPresent()){
+            new NoSuchElementException("Work with id = "+workId +"not found");
+        }
+        Work work=w.get();
+        Workdto workdto=new Workdto();
+        workdto.setDescription(work.getDescription());
+        workdto.setTitle(work.getTitle());
+        workdto.setDuration(work.getDuration());
+        workdto.setWorkId(work.getWorkId());
+        workdto.setUserId(work.getEmployer().getUserId());
+        return workdto;
 
     }
     public void updateWork(Integer workId ,Work work) throws Exception {
         Optional<Work> w=workRepository.findById(workId);
         if(w.isPresent()){
-            work.setWorkId(workId);
-            workRepository.save(work);
+           Work newWork=w.get();
+           newWork.setWorkId(workId);
+           newWork.setTitle(work.getTitle());
+           newWork.setDuration(work.getDuration());
+           newWork.setDescription(work.getDescription());
+           newWork.setStartTime(work.getStartTime());
+
+            workRepository.save(newWork);
         }else {
             throw new Exception("work with id = "+workId+" not exists!");
         }
@@ -61,8 +80,23 @@ public class WorkService {
 
     }
 
-    public List<Work> getAllWorkByUserId(Integer userId){
-       return  workRepository.findByEmployerUserId(userId);
+    public List<Workdto> getAllWorkByUserId(Integer userId){
+       List<Work>  works=workRepository.findByEmployerUserId(userId);
+       List<Workdto> workdtos=new ArrayList<>();
+        for (Work work:works
+             ) {
+            Workdto workdto=new Workdto();
+            workdto.setDescription(work.getDescription());
+            workdto.setTitle(work.getTitle());
+            workdto.setDuration(work.getDuration());
+            workdto.setWorkId(work.getWorkId());
+            workdto.setStartTime(work.getStartTime());
+            workdto.setUserId(work.getEmployer().getUserId());
+            workdtos.add(workdto);
+
+
+        }
+       return workdtos ;
     }
     public List<Work> getWorksFromYesterdayByUserId(Integer userId) {
         LocalDateTime startDateTime = LocalDate.now().minusDays(1).atStartOfDay();
@@ -71,7 +105,22 @@ public class WorkService {
         return workRepository.findByEmployerUserIdAndStartTimeBetween(userId, startDateTime, endDateTime);
     }
 
-    public  List<Work> getLastTenWorkByuserid(Integer id){
-        return workRepository.findTop10ByEmployerUserIdOrderByStartTimeDesc(id);
+    public  List<Workdto> getLastTenWorkByuserid(Integer id){
+        List<Work> works= workRepository.findTop10ByEmployerUserIdOrderByStartTimeDesc(id);
+        List<Workdto> workdtos=new ArrayList<>();
+        for (Work work:works
+        ) {
+            Workdto workdto=new Workdto();
+            workdto.setDescription(work.getDescription());
+            workdto.setTitle(work.getTitle());
+            workdto.setDuration(work.getDuration());
+            workdto.setWorkId(work.getWorkId());
+            workdto.setStartTime(work.getStartTime());
+            workdto.setUserId(work.getEmployer().getUserId());
+            workdtos.add(workdto);
+
+
+        }
+        return workdtos ;
     }
 }

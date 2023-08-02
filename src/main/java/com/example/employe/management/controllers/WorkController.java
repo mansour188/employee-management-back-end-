@@ -1,5 +1,6 @@
 package com.example.employe.management.controllers;
 
+import com.example.employe.management.dto.Workdto;
 import com.example.employe.management.model.Work;
 import com.example.employe.management.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,12 @@ public class WorkController {
 
     }
     @GetMapping("/get/{userId}")
-    public List<Work> getAllWorkByUserId(@PathVariable("userId") Integer userId){
+    public List<Workdto> getAllWorkByUserId(@PathVariable("userId") Integer userId){
 
         return workService.getAllWorkByUserId(userId);
     }
     @GetMapping("/last/{userId}")
-    List<Work> getLastTenWorks(@PathVariable("userId") Integer userId){
+    List<Workdto> getLastTenWorks(@PathVariable("userId") Integer userId){
         return workService.getLastTenWorkByuserid(userId);
     }
     @GetMapping("/yesterday/{userId}")
