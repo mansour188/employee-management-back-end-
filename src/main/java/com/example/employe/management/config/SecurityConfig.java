@@ -65,7 +65,9 @@ public class SecurityConfig  {
         http.csrf(AbstractHttpConfigurer::disable)
 
 
+
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/api/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
                         .requestMatchers("/auth/**").permitAll()
@@ -75,8 +77,10 @@ public class SecurityConfig  {
                         .requestMatchers(HttpMethod.PUT,"/project/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/departement/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name())
                         .requestMatchers(HttpMethod.GET,"/project/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/leaveRequest/pending").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,"/leaveRequest/accept/**","/leaveRequest/reject/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/leaveRequest/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/leaveRequest/All","/leaveRequest/accepted","/leaveRequest/rejected").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/leaveRequest/All").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/leaveRequest/CurrentYear/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/leaveRequest/thisYear").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/project/**").hasAuthority(Role.ADMIN.name())
@@ -84,6 +88,7 @@ public class SecurityConfig  {
                         .requestMatchers(HttpMethod.POST,"/work/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
 
                         .requestMatchers(HttpMethod.GET,"/work/**").hasAnyAuthority(Role.EMPLOYER.name(), Role.MANAGER.name(), Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/statestic/**").hasAuthority(Role.ADMIN.name())
 
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

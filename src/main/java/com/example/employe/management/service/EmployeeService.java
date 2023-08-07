@@ -225,4 +225,9 @@ public class EmployeeService implements UserDetailsService {
         }
         throw new UserFoundException("user with id= "+userId+" not found");
     }
+
+
+    public Integer NumberOfemployees(){
+        return getAllEmployers().toArray().length;
+    }
 }

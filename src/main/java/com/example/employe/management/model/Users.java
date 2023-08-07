@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -39,15 +40,23 @@ public class Users  {
     private String ImageUrl;
     private Role role;
 
+
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     private Project project;
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     private  Department department;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "LeaveRequest_id", referencedColumnName = "Id")
-    private LeaveRequest LeaveRequest;
+    @ToString.Exclude
     @JsonIgnore
-    @OneToMany(mappedBy = "employer")
+    @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    private List<LeaveRequest> LeaveRequest;
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Work> works;
 
 

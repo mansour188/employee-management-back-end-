@@ -1,7 +1,8 @@
 package com.example.employe.management.controllers;
 
 import com.example.employe.management.dto.LeaveRequestDto;
-import com.example.employe.management.model.Department;
+import com.example.employe.management.dto.LeaveRequestMangementDto;
+import com.example.employe.management.dto.LeaveRequestResponse;
 import com.example.employe.management.model.LeaveRequest;
 import com.example.employe.management.service.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class LeaveRequestController {
     @Autowired
     LeaveRequestService leaveRequestService;
     @PostMapping("/{userId}")
-    public void sendLeaveRequest(@RequestParam("userId") Integer userId, LeaveRequestDto leaveRequestDto){
+    public void sendLeaveRequest(@PathVariable("userId") Integer userId, @RequestBody LeaveRequestDto leaveRequestDto){
 
         leaveRequestService.sendLeaveRequest(userId,leaveRequestDto);
 
@@ -32,7 +33,7 @@ public class LeaveRequestController {
     }
     @GetMapping("/rejected")
     public  List<LeaveRequest> getNonAcceptedLeaveRequest(){
-        return leaveRequestService.getNonAcceptedLeaveRequest();
+        return leaveRequestService.getNonRejectedLeaveRequest();
     }
     @GetMapping("/{userId}")
     public List<LeaveRequest> getLeaveRequestByuserId(@PathVariable("userId") Integer userId){
@@ -46,6 +47,30 @@ public class LeaveRequestController {
     @GetMapping("/thisYear")
     public List<LeaveRequest> getLeaveRequestsInCurrentYear(){
         return leaveRequestService.getLeaveRequestsInCurrentYear();
+    }
+
+    @GetMapping("/last/{userId}")
+    public List<LeaveRequestResponse> getLastThreeByuserId(@PathVariable("userId") Integer userId){
+        return leaveRequestService.getLastThreeByuserId(userId);
+    }
+    @GetMapping("/pending")
+    public List<LeaveRequestMangementDto> getPendingLeaveReqest(){
+        System.out.println("*********************************");
+        return leaveRequestService.getPendingLeaveRequest();
+    }
+    @DeleteMapping("/delete/{id}")
+    public void deleteLeaveRequestById(@PathVariable("id") Integer id){
+         leaveRequestService.deleteLeaveRequestById(id);
+    }
+
+    @PutMapping("/reject/{id}")
+    public void rejectLeaveRequest(@PathVariable("id") Integer id){
+        leaveRequestService.rejectLeaveRequest(id);
+    }
+    @PutMapping("/accept/{id}")
+    public void acceptLeaveRequest(@PathVariable("id") Integer id){
+
+        leaveRequestService.acceptLeaveRequest(id);
     }
 
 

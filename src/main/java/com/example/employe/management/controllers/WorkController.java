@@ -25,7 +25,7 @@ public class WorkController {
         return workService.getAllWorkByUserId(userId);
     }
     @GetMapping("/last/{userId}")
-    List<Workdto> getLastTenWorks(@PathVariable("userId") Integer userId){
+    List<Workdto> getLastThreeWorks(@PathVariable("userId") Integer userId){
         return workService.getLastTenWorkByuserid(userId);
     }
     @GetMapping("/yesterday/{userId}")

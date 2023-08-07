@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @AllArgsConstructor
 @Data
@@ -122,5 +124,18 @@ public class WorkService {
 
         }
         return workdtos ;
+    }
+
+    public  Integer getNumberofAllTasks(){
+       Iterable<Work> iterable=workRepository.findAll();
+        return  StreamSupport.stream(iterable.spliterator(), false)
+                .collect(Collectors.toList()).size();
+    }
+
+    public Integer getNumberOfWorkToday(){
+        LocalDateTime startOfDay = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX);
+
+        return workRepository.findAllByStartTimeBetween(startOfDay, endOfDay).size();
     }
 }
