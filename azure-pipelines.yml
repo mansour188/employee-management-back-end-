@@ -8,7 +8,7 @@ steps:
   - task: Maven@2
     displayName: 'Maven app/pom.xml'
     inputs:
-      mavenPomFile: 'employe-management/pom.xml'
+      mavenPomFile: '$(System.DefaultWorkingDirectory)/pom.xml'
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       mavenAuthenticateFeed: false
 
