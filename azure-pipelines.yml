@@ -1,22 +1,27 @@
-trigger:
-  - master
-
 pool:
   name: Myagent
+  demands: maven
 
-stages:
-  - stage: Build
-    displayName: 'Build and Package'
-    jobs:
-      - job: Build
-        displayName: 'Build'
-        steps:
-          - script: mvn clean package
+#Your build pipeline references an undefined variable named ‘Parameters.mavenPOMFile’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 
-  - stage: Test
-    displayName: 'Run Tests'
-    jobs:
-      - job: Test
-        displayName: 'Test'
-        steps:
-          - script: mvn test
+steps:
+  - task: Maven@2
+    displayName: 'Maven app/pom.xml'
+    inputs:
+      mavenPomFile: '$(Parameters.mavenPOMFile)'
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      mavenAuthenticateFeed: false
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:
+      SourceFolder: '$(system.defaultworkingdirectory)'
+      Contents: '**/*.jar'
+      TargetFolder: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()
